@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Training Website</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Custom CSS -->
+     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Model Training Website</h1>
+        <!-- <form id="training-form"> -->
+            <form id="training-form" method="POST" action="/train" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="learning-type">Select Learning Type:</label>
+                <!-- <select class="form-control" id="learning-type" required>
+                    <option value="transfer">Transfer Learning</option>
+                    <option value="other">Other Learning Type</option>
+                </select> -->
+                <select class="form-control" id="learning-type" name="learning-type" required>
+                    <option value="transfer">Transfer Learning</option>
+                    <option value="other">Other Learning Type</option>
+                </select>
+            </div>
+
+            <!-- <input type="file" class="form-control-file" id="dataset" name="dataset" accept=".zip" required>
+<input type="file" class="form-control-file" id="validation" name="validation" accept=".zip" required>
+<input type="file" class="form-control-file" id="testing" name="testing" accept=".zip" required> -->
+            <div class="form-group">
+                <label for="dataset">Upload Dataset:</label>
+                <input type="file" class="form-control-file" name="file" accept=".zip" required multiple>
+
+                <!-- <input type="file" class="form-control-file" id="dataset" name="dataset" accept=".zip" required> -->
+            </div>
+            <!-- <div class="form-group">
+                <label for="validation">Upload Validation Data:</label>
+                <input type="file" class="form-control-file" id="validation" name="validation" accept=".zip" required>
+            </div>
+            <div class="form-group">
+                <label for="testing">Upload Testing Data:</label>
+                <input type="file" class="form-control-file" id="testing"  name="testing" accept=".zip" required>
+            </div> -->
+            <button type="submit" class="btn btn-primary">Start Training</button>
+        </form>
+        <div class="mt-4" id="results" style="display: none;">
+            <h2>Training Results</h2>
+            <div id="loss-accuracy-chart"></div>
+            <a href="#" class="btn btn-success mt-3" id="download-button" download>Download Trained Model</a>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Custom JavaScript -->
+       <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+import cv2
+import mediapipe as mp
+
+# Initialize MediaPipe Hand Tracking
+mp_drawing = mp.solutions.drawing_utils
+mp_hands = mp.solutions.hands
+
+# Constants for canvas dimensions
+CANVAS_WIDTH, CANVAS_HEIGHT = 640, 480
+
+# Create an empty canvas
+canvas = 255 * np.ones(shape=[CANVAS_HEIGHT, CANVAS_WIDTH, 3], dtype=np.uint8)
+
+# Flag to indicate drawing
+drawing = False
+
+# Previous position of the index finger tip
+prev_x, prev_y = -1, -1
+
+def draw_on_canvas(event, x, y, flags, param):
+    pass  # No need for mouse events in this version
+
+def main():
+    global canvas, drawing, prev_x, prev_y
+
+    cap = cv2.VideoCapture(0)
+    cap.set(3, CANVAS_WIDTH)
+    cap.set(4, CANVAS_HEIGHT)
+
+    with mp_hands.Hands(
+        min_detection_confidence=0.5,
+        min_tracking_confidence=0.5
+    ) as hands:
+        while cap.isOpened():
+            success, image = cap.read()
+            if not success:
+                print("Failed to capture frame.")
+                break
+
+            # Convert the image to RGB for MediaPipe
+            image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+            # Process the hand landmarks using MediaPipe
+            results = hands.process(image_rgb)
+
+            # Draw the hand landmarks on the image
+            if results.multi_hand_landmarks:
+                for hand_landmarks in results.multi_hand_landmarks:
+                    mp_drawing.draw_landmarks(
+                        image, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+
+                    # Get the x, y coordinates of the index finger tip
+                    index_finger_tip_x = int(hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].x * CANVAS_WIDTH)
+                    index_finger_tip_y = int(hand_landmarks.landmark[mp_hands.HandLandmark.INDEX_FINGER_TIP].y * CANVAS_HEIGHT)
+
+                    # Check if the index finger tip is close to the edge of the image
+                    if 10 < index_finger_tip_x < CANVAS_WIDTH - 10 and 10 < index_finger_tip_y < CANVAS_HEIGHT - 10:
+                        cv2.circle(image, (index_finger_tip_x, index_finger_tip_y), 5, (0, 255, 0), -1)
+
+                        # Draw on the canvas only when the index finger moves (pen down gesture)
+                        if prev_x != -1 and prev_y != -1:
+                            cv2.line(canvas, (prev_x, prev_y), (index_finger_tip_x, index_finger_tip_y), (0, 0, 255), 3)
+                        prev_x, prev_y = index_finger_tip_x, index_finger_tip_y
+                    else:
+                        prev_x, prev_y = -1, -1
+
+            # Display the canvas and the image with annotations
+            if canvas is not None:
+                cv2.imshow('Canvas', canvas)
+            cv2.imshow('Hand Gesture Drawing', image)
+
+            # Exit the loop when 'q' is pressed
+            if cv2.waitKey(5) & 0xFF == ord('q'):
+                break
+
+    cap.release()
+    cv2.destroyAllWindows()
+
+if __name__ == "__main__":
+    main()
