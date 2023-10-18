@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Coding Assistant</title>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Coding Assistant</h1>
+
+        <!-- User Input Container -->
+        <div class="input-container my-3">
+            <label for="user-input">Your Prompt:</label>
+            <input type="text" class="form-control" id="user-input">
+        </div>
+
+        <div class="text-center">
+            <button class="btn btn-primary" id="text-prompt-button">Submit Text Prompt</button>
+            <button class="btn btn-primary" id="voice-command-button">Use Voice Command</button>
+        </div>
+
+        <!-- Response Container -->
+        <div class="response-container mt-3">
+            <h2>Assistant's Response:</h2>
+            <div id="response-div"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
+
